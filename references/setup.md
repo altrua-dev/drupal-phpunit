@@ -184,25 +184,46 @@ Testsuite directories omit the `web/` prefix.
 
 ## Execution commands
 
-Pre-deploy, from the Drupal project root:
+All commands run from the **Drupal project root**. Adapt `-c` to `phpunit.xml` or `web/phpunit.xml`.
+
+### Pre-deploy (all configured custom tests)
 
 ```bash
 ./vendor/bin/phpunit -c phpunit.xml --testdox
 ```
 
-Optional helper from the installed skill (not from the Drupal repo):
+Optional skill helper (lives in the skill install path, not the Drupal repo). Resolve the script path in this order:
+
+1. `.agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh` (project install)
+2. `~/.agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh` (global install)
 
 ```bash
-bash ~/.agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh
+bash .agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh
 ```
 
-Other common invocations:
+The helper auto-detects `phpunit.xml` or `web/phpunit.xml`, uses `vendor/bin/phpunit`, and runs through DDEV when `.ddev/config.yaml` exists. Do not pass `--testdox` to the helper; it adds it automatically. Extra arguments pass through to PHPUnit:
 
 ```bash
-# Adapt -c to the selected path: phpunit.xml (root) or web/phpunit.xml
-./vendor/bin/phpunit -c phpunit.xml --group module_name
+bash .agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh --testsuite kernel
+bash .agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh --group my_module
+```
+
+### Targeted runs
+
+```bash
+# Single test file
+./vendor/bin/phpunit -c phpunit.xml web/modules/custom/module_name/tests/src/Kernel/MyTest.php --testdox
+
+# All tests in one module
+./vendor/bin/phpunit -c phpunit.xml web/modules/custom/module_name --testdox
+
+# By @group annotation (add @group module_name to test classes)
+./vendor/bin/phpunit -c phpunit.xml --group module_name --testdox
+
+# By testsuite from phpunit.xml
 ./vendor/bin/phpunit -c phpunit.xml --testsuite unit --group module_name
 ./vendor/bin/phpunit -c phpunit.xml --testsuite kernel --group module_name
-./vendor/bin/phpunit -c phpunit.xml web/modules/custom/module_name/tests/src/Kernel/MyTest.php
 ./vendor/bin/phpunit -c phpunit.xml --testsuite kernel --group module_name -v
 ```
+
+For coverage reports and pre-commit guidance, see [testing-guide.md](testing-guide.md).
