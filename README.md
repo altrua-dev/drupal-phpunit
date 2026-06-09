@@ -33,6 +33,8 @@ The skill can also be used whenever the user asks to write, configure, or debug 
 ```text
 drupal-phpunit/
 ├── SKILL.md
+├── scripts/
+│   └── run-drupal-tests.sh
 └── references/
     ├── setup.md
     ├── skeletons.md
@@ -40,6 +42,7 @@ drupal-phpunit/
 ```
 
 - `SKILL.md` is the main agent-facing guide: decision tree, core rules, setup checklist, and test creation workflow.
+- `scripts/run-drupal-tests.sh` is an optional helper to run PHPUnit from any Drupal project. It stays in the skill install path, not in the project repo.
 - `references/setup.md` contains the full PHPUnit setup flow, custom bootstrap notes, `phpunit.xml.dist` guidance, and execution commands.
 - `references/skeletons.md` contains reusable test skeletons for Unit, Kernel, Functional, and shared base classes.
 - `references/troubleshooting.md` maps common errors to causes and fixes.

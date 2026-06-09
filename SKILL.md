@@ -15,6 +15,41 @@ Read these only when needed:
 - [references/skeletons.md](references/skeletons.md): `UnitTestCase`, `KernelTestBase`, `BrowserTestBase`, and shared test base skeletons.
 - [references/troubleshooting.md](references/troubleshooting.md): common setup and runtime failures.
 
+## Run all tests (pre-deploy)
+
+From the **Drupal project root**, use the standard PHPUnit command:
+
+```bash
+./vendor/bin/phpunit -c phpunit.xml --testdox
+```
+
+Adapt `-c` to the project config: `phpunit.xml` or `web/phpunit.xml`.
+
+Optional helper: this skill ships `scripts/run-drupal-tests.sh`. It does not live in the Drupal repo. Invoke it from the installed skill path while your shell is in the project root.
+
+Resolve the script path in this order:
+
+1. `.agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh` (project install)
+2. `~/.agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh` (global install)
+
+```bash
+bash .agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh
+```
+
+The helper auto-detects `phpunit.xml` or `web/phpunit.xml`, uses `vendor/bin/phpunit`, and runs through DDEV when `.ddev/config.yaml` exists. Do not pass `--testdox` to the script; it already adds it. Extra arguments pass through to PHPUnit:
+
+```bash
+bash .agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh --testsuite kernel
+bash .agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh --group my_module
+```
+
+### Agent: when the user asks to run tests
+
+1. `cd` to the Drupal project root (`vendor/bin/phpunit` must exist).
+2. Run the helper script from the resolved skill path above, or use direct PHPUnit.
+3. Wait for the command to finish. Running output with dots is not success until exit code is 0.
+4. Report failures with the PHPUnit error message. If the run takes minutes, that is normal for kernel tests.
+
 ## Core rules
 
 **DRY rule**: if `setUp()` repeats bundle/field/config/entity creation in 2+ test classes, create a shared trait or base class in the same module.
@@ -118,6 +153,20 @@ $this->installConfig(['MODULE', 'system']);    // For YAML configuration.
 ```
 
 ### Step 7 - Run the test directly
+
+All tests (pre-deploy), from the Drupal project root:
+
+```bash
+./vendor/bin/phpunit -c phpunit.xml --testdox
+```
+
+Optional helper from the installed skill path:
+
+```bash
+bash ~/.agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh
+```
+
+Single test file:
 
 ```bash
 ./vendor/bin/phpunit -c web/phpunit.xml path/to/Test.php --testdox

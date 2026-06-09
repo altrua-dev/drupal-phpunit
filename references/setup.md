@@ -184,6 +184,20 @@ Testsuite directories omit the `web/` prefix.
 
 ## Execution commands
 
+Pre-deploy, from the Drupal project root:
+
+```bash
+./vendor/bin/phpunit -c phpunit.xml --testdox
+```
+
+Optional helper from the installed skill (not from the Drupal repo):
+
+```bash
+bash ~/.agents/skills/drupal-phpunit/scripts/run-drupal-tests.sh
+```
+
+Other common invocations:
+
 ```bash
 # Adapt -c to the selected path: phpunit.xml (root) or web/phpunit.xml
 ./vendor/bin/phpunit -c phpunit.xml --group module_name
